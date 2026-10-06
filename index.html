@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171D38">
+  <title>Pip and the Little Star — a bedtime story</title>
+  <link rel="stylesheet" href="assets/art.css">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body { background: #11162b; color: #fff5dc; font-family: var(--font-ui); display: grid; min-height: 100dvh; place-items: center; padding: 0; }
+    main { width: min(calc(100vw - 36px), calc((100dvh - 155px) * 16 / 9), 1440px); }
+    .eyebrow { margin: 0 0 16px; color: #c3bfd7; text-align: center; font-size: 10px; letter-spacing: .28em; }
+    #stage { position: relative; aspect-ratio: 16 / 9; width: 100%; overflow: hidden; border-radius: 24px; background: #242b4a; box-shadow: 0 22px 75px #0005; container-type: size; }
+    #picture, #hill-picture { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+    #caption { max-width: 82cqw; font-size: clamp(11px, 4.3cqh, 46px); }
+    #caption:empty { display: none; }
+    .defs { position: absolute; width: 0; height: 0; overflow: visible; }
+    .controls { display: flex; align-items: center; gap: 10px; margin-top: 16px; width: 100%; }
+    button { cursor: pointer; border: 1px solid #52526d; background: #252940; color: #fff5dc; font: inherit; font-size: 12px; border-radius: 24px; min-height: 44px; padding: 10px 18px; }
+    button:hover { background: #35394f; }
+    button:focus-visible, input:focus-visible { outline: 3px solid #ffd989; outline-offset: 4px; }
+    #play { background: #f3d69a; border-color: #f3d69a; color: #25263e; min-width: 80px; }
+    #scrub { min-width: 30px; flex: 1; accent-color: #f3d69a; cursor: pointer; }
+    #time { color: #bab7cb; font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .hint { color: #89899f; text-align: center; font-size: 10px; margin: 12px 0 0; letter-spacing: .08em; }
+    @media (max-width: 600px) { main { width: calc(100vw - 20px); } #stage { border-radius: 14px; } button { padding: 8px 12px; } .controls { gap: 6px; } .hint { font-size: 9px; } }
+    @media (max-width: 400px) { .controls { flex-wrap: wrap; } #scrub { order: 1; flex-basis: calc(100% - 80px); } #time { order: 1; } }
+    html.render body { background: #242b4a; }
+    html.render main { width: 100vw; }
+    html.render #stage { border-radius: 0; box-shadow: none; }
+    html.render .eyebrow, html.render .controls, html.render .hint { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">A LITTLE BEDTIME STORY</p>
+    <section id="stage" aria-label="Pip and the Little Star animated story">
+      <svg class="defs" aria-hidden="true"></svg>
+      <svg id="picture" viewBox="0 0 1920 1080" role="img" aria-label="A tiny snail helps a fallen star find her way home."></svg>
+      <svg id="hill-picture" viewBox="-140 1230 1280 720" role="img" aria-label="Pip and the fireflies carry the little star home." style="opacity:0;visibility:hidden"></svg>
+      <h1 id="opening" class="title-card"><span class="t-small">Pip and the</span><span class="t-big">Little Star</span></h1>
+      <p id="ending" class="end-card" style="opacity:0">The End</p>
+      <p id="caption" class="caption" aria-live="polite" aria-atomic="true"></p>
+    </section>
+    <div class="controls" aria-label="Story playback controls">
+      <button id="play" type="button" aria-label="Pause story">Pause</button>
+      <button id="restart" type="button">Restart</button>
+      <input id="scrub" aria-label="Story time in seconds" type="range" min="0" max="60" step="0.1" value="0">
+      <output id="time" for="scrub">0:00 / 1:00</output>
+      <button id="sound" type="button" aria-label="Turn story sound on" aria-pressed="false">Sound off</button>
+    </div>
+    <p class="hint">ONE SMALL ACT OF KINDNESS · SPACE TO PLAY / PAUSE</p>
+  </main>
+  <script src="vendor/gsap-3.13.0.min.js"></script>
+  <script src="assets/art.js"></script>
+  <script src="js/animation.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/story.js"></script>
+</body>
+</html>

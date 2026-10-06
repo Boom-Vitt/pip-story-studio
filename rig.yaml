@@ -1,0 +1,47 @@
+version: "0.2"
+name: story-studio
+summary: >
+  A four-seat studio that makes a cute, beautiful ~60 second English story animation
+  as a single browser page (WebGL/Three.js + GSAP). Director and art director run on
+  Claude Code; the builder and the independent reviewer run on Codex.
+
+culture_file: CULTURE.md
+
+pods:
+  - id: studio
+    label: Story Studio
+    members:
+      - id: director
+        agent_ref: "path:/opt/homebrew/lib/node_modules/@openrig/cli/daemon/specs/agents/orchestration/orchestrator"
+        runtime: claude-code
+        profile: default
+        cwd: "."
+      - id: art
+        agent_ref: "path:/opt/homebrew/lib/node_modules/@openrig/cli/daemon/specs/agents/design/product-designer"
+        runtime: claude-code
+        profile: default
+        cwd: "."
+      - id: build
+        agent_ref: "path:/opt/homebrew/lib/node_modules/@openrig/cli/daemon/specs/agents/development/implementer"
+        runtime: codex
+        model: gpt-6.1-sol
+        profile: default
+        cwd: "."
+      - id: review
+        agent_ref: "path:/opt/homebrew/lib/node_modules/@openrig/cli/daemon/specs/agents/review/independent-reviewer"
+        runtime: codex
+        model: gpt-6.1-sol
+        profile: default
+        cwd: "."
+    edges:
+      - kind: delegates_to
+        from: director
+        to: art
+      - kind: delegates_to
+        from: director
+        to: build
+      - kind: delegates_to
+        from: build
+        to: review
+
+edges: []

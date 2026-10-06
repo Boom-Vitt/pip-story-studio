@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Art Preview — Pip and the Little Star</title>
+<link rel="stylesheet" href="art.css">
+<style>
+  body { display: block; padding: 24px; max-width: 1400px; margin: 0 auto; }
+  h1 { font: 800 28px var(--font-display); color: var(--star); margin: 0 0 4px; }
+  h2 { font: 800 18px var(--font-ui); margin: 28px 0 10px; opacity: .9; }
+  p.note { margin: 0 0 16px; opacity: .7; font-size: 14px; }
+  .sheet { display: flex; flex-wrap: wrap; gap: 12px; }
+  .cell { background: #1A2058; border-radius: 14px; padding: 6px 6px 8px; text-align: center; font-size: 12px; }
+  .cell svg { display: block; width: 160px; height: 140px; }
+  .boards { display: grid; grid-template-columns: repeat(auto-fill, minmax(520px, 1fr)); gap: 18px; }
+  .board .stage, .board .controls { width: 100%; }
+  .board figcaption { font-size: 13px; opacity: .75; margin-top: 6px; }
+  .board .controls { margin-top: 10px; }
+  /* preview.html#boards or #cast shows one half (handy for screenshots) */
+  body.only-boards .cast, body.only-cast .boards-sec { display: none; }
+</style>
+</head>
+<body>
+<h1>Pip and the Little Star · art preview</h1>
+<p class="note">Rendered live from <code>assets/art.js</code> + <code>assets/art.css</code>. Static poses only; motion is specified in <code>art-bible.md</code>.</p>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" id="defs-host"></svg>
+
+<section class="cast"><h2>Pip: expressions</h2><div class="sheet" id="pips"></div>
+<h2>Little Star: expressions</h2><div class="sheet" id="stars"></div>
+<h2>Fireflies, moon, props</h2><div class="sheet" id="props"></div></section>
+<section class="boards-sec"><h2>Storyboard frames (recommended camera boards)</h2><div class="boards" id="boards"></div></section>
+
+<script src="art.js"></script>
+<script>
+(function () {
+  const A = window.ART, C = A.C;
+  if (location.hash) document.body.classList.add('only-' + location.hash.slice(1));
+  document.getElementById('defs-host').innerHTML = A.defs();
+
+  // static expression applier (no GSAP needed for the preview)
+  function pose(root, who, p, name) {
+    const ex = A.EXPR[who][name];
+    for (const slot of Object.values(A.SLOTS[who])) for (const v of slot) {
+      const el = root.querySelector('#' + p + '-' + v); if (!el) continue;
+      const on = ex.show.includes(v); el.style.opacity = on ? 1 : 0; el.style.visibility = on ? 'visible' : 'hidden';
+    }
+    for (const [k, v] of Object.entries(ex.set)) {
+      const el = root.querySelector('#' + p + '-' + k); if (!el) continue;
+      if ('opacity' in v) el.style.opacity = v.opacity;
+      el.setAttribute('transform', `translate(${v.x || 0},${v.y || 0}) rotate(${v.rotation || 0}) scale(${v.scale ?? 1})`);
+    }
+  }
+  const tf = (id, s) => { const el = document.getElementById(id); el.setAttribute('transform', s); return el; };
+  const cell = (host, label, vb, inner) => {
+    const d = document.createElement('div'); d.className = 'cell';
+    d.innerHTML = `<svg viewBox="${vb}">${inner}</svg><div>${label}</div>`; host.appendChild(d); return d;
+  };
+
+  const pips = document.getElementById('pips');
+  Object.keys(A.EXPR.pip).forEach((n) => { const d = cell(pips, n, '-215 -340 450 370', A.pip('pp-' + n)); pose(d, 'pip', 'pp-' + n, n); });
+  { const d = cell(pips, 'tucked (body scale .12)', '-215 -340 450 370', A.pip('pp-tuck')); tf('pp-tuck-body', 'scale(.12)'); tf('pp-tuck-shell', 'translate(0,30)'); }
+  { const d = cell(pips, 'big heart (S3)', '-215 -340 450 370', A.pip('pp-heart')); pose(d, 'pip', 'pp-heart', 'smile'); const h = document.getElementById('pp-heart-heart'); h.style.opacity = 1; h.style.visibility = 'visible'; }
+
+  const stars = document.getElementById('stars');
+  Object.keys(A.EXPR.star).forEach((n) => { const d = cell(stars, n, '-170 -150 340 300', A.star('ss-' + n)); pose(d, 'star', 'ss-' + n, n); });
+
+  const props = document.getElementById('props');
+  cell(props, 'firefly ×1 (scale 2)', '-80 -70 160 140', `<g transform="scale(2)">${A.firefly()}</g>`);
+  cell(props, 'moon', '-150 -130 300 260', A.moon('pm'));
+  cell(props, 'clover', '-60 -110 120 120', '<use href="#sym-clover"/>');
+  cell(props, 'grass tuft', '-60 -80 120 100', '<rect x="-60" y="-80" width="120" height="100" fill="#141A47"/><use href="#sym-grass"/>');
+  cell(props, 'sparkle', '-40 -35 80 70', '<rect x="-40" y="-35" width="80" height="70" fill="#141A47"/><use href="#sym-sparkle"/>');
+  cell(props, 'heart twinkle', '-40 -35 80 70', '<rect x="-40" y="-35" width="80" height="70" fill="#141A47"/><use href="#sym-heart" transform="scale(1.6)"/>');
+  cell(props, 'call rings', '-40 -50 120 100', '<rect x="-40" y="-50" width="120" height="100" fill="#141A47"/><use href="#sym-ring"/><use href="#sym-ring" transform="translate(22,0) scale(1.5)" opacity=".7"/><use href="#sym-ring" transform="translate(46,0) scale(2)" opacity=".4"/>');
+  cell(props, 'home ghost', '-60 -55 120 110', '<rect x="-60" y="-55" width="120" height="110" fill="#141A47"/><use href="#sym-starPath" transform="scale(.4)" fill="none" stroke="#FFF6D8" stroke-width="5" stroke-dasharray="2 14" stroke-linecap="round" opacity=".5"/>');
+
+  // ---- storyboard frames
+  const boards = document.getElementById('boards');
+  function board(label, vb, svgInner, overlay = '') {
+    const f = document.createElement('figure'); f.className = 'board'; f.style.margin = 0;
+    f.innerHTML = `<div class="stage"><svg viewBox="${vb}" preserveAspectRatio="xMidYMid slice">${svgInner}</svg>${overlay}</div><figcaption>${label} · viewBox ${vb}</figcaption>`;
+    boards.appendChild(f); return f;
+  }
+  const uniq = (html, k) => html.replace(/id="/g, `id="${k}`).replace(/href="#(m-|h-)/g, `href="#${k}$1`);
+  const place = (x, y, s, inner, rot = 0) => `<g transform="translate(${x},${y}) rotate(${rot}) scale(${s})">${inner}</g>`;
+  const night = (f) => {
+    const set = (id, fill, rim) => { f.querySelector(`[id$="${id}"]`).setAttribute('fill', fill); f.querySelector(`[id$="${id}-rim"]`).setAttribute('stroke', rim); };
+    set('m-hill-far', C.hillFar, C.rimFar); set('m-hill-mid', C.hillMid, C.rimMid); set('m-meadow', C.meadow, C.rimMeadow);
+    f.querySelector('[id$="m-sky-dusk"]').style.opacity = 0;
+  };
+  const famPose = (f, k, name) => [1, 2, 3, 4].forEach((i) => pose(f, 'star', `${k}m-home-fam${i}`, name));
+  const famPoseH = (f, k, name) => [1, 2, 3, 4].forEach((i) => pose(f, 'star', `${k}h-home-fam${i}`, name));
+  const cap = (t) => `<p class="caption">${t}</p>`;
+  const [px, py] = A.MEADOW.pip, [lx, ly] = A.MEADOW.landing, [hx, hy] = A.MEADOW.home;
+  const ringFF = (cx, cy, r, n) => Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI * 2; return place(r1(cx + Math.cos(a) * r), r1(cy + Math.sin(a) * r * 0.7 + (i % 2 ? 10 : -8)), 1.25, A.firefly()); }).join('');
+  const r1 = (n) => Math.round(n * 10) / 10;
+
+  // B1 title, dusk
+  { const k = 'b1'; const f = board('S1 · 0–3 s title over dusk', A.CAMERA.S1_wide,
+      uniq(A.setMeadow(), k) + place(hx, hy, 0.4, A.star(k + 'ls')) + place(px, py, 0.5, A.pip(k + 'p')),
+      `<h1 class="title-card"><span class="t-small">Pip and the</span><span class="t-big">Little Star</span></h1>`);
+    famPose(f, k, 'sleepy'); pose(f, 'star', k + 'ls', 'sleepy'); tf(k + 'p-body', 'scale(.12)'); tf(k + 'p-shell', 'translate(0,30)'); }
+  // B2 yawn close-up
+  { const k = 'b2'; const f = board('S1 · ~8.5 s camera in, the yawn', A.CAMERA.S1_star,
+      uniq(A.setMeadow(), k) + place(hx, hy, 0.4, A.star(k + 'ls')), cap('The smallest star stretched, and yawned, and wobbled…'));
+    night(f); famPose(f, k, 'happy'); pose(f, 'star', k + 'ls', 'yawn'); }
+  // B3 landing
+  { const k = 'b3'; const f = board('S2 · ~12.5 s plink! Pip pops out', A.CAMERA.S2_land,
+      uniq(A.setMeadow(), k) + place(px, py, 0.5, A.pip(k + 'p')) + place(lx, ly, 0.4, A.star(k + 'ls'), -12) +
+      [[-60, -50, .9], [70, -70, .7], [90, 10, .6], [-80, 20, .5]].map(([dx, dy, s]) => place(lx + dx, ly + dy, s, '<use href="#sym-sparkle"/>')).join(''),
+      cap('…and tumbled all the way down — <em>plink!</em> — into the clover, right next to Pip the snail.'));
+    night(f); pose(f, 'pip', k + 'p', 'startled'); pose(f, 'star', k + 'ls', 'surprised'); }
+  // B4 sad
+  { const k = 'b4'; const f = board('S2 · ~17 s “I can’t shine from down here”', A.CAMERA.S2_land,
+      uniq(A.setMeadow(), k) + place(px, py, 0.5, A.pip(k + 'p')) + place(lx, ly, 0.4, A.star(k + 'ls')),
+      cap('“Oh no,” she whispered. “I can’t shine from down here.”'));
+    night(f); pose(f, 'pip', k + 'p', 'normal'); pose(f, 'star', k + 'ls', 'sad'); }
+  // B5 two-shot, heart, hop on
+  { const k = 'b5'; const f = board('S3 · ~27 s “Hop on” (star in #pip-rider)', A.CAMERA.S3_two,
+      uniq(A.setMeadow(), k) + place(px, py, 0.5, A.pip(k + 'p')), cap('“Hop on,” he smiled. “I’ll take you home.”'));
+    night(f); pose(f, 'pip', k + 'p', 'smile'); const h = document.getElementById(k + 'p-heart'); h.style.opacity = .8; h.style.visibility = 'visible';
+    document.getElementById(k + 'p-rider').innerHTML = `<g transform="translate(0,-52) scale(.75)">${A.star(k + 'ls')}</g>`; pose(f, 'star', k + 'ls', 'happy'); }
+
+  // hill boards: Pip on crest
+  function onCrest(f, k, x) {
+    const path = f.querySelector(`[id="${k}h-crest"]`), L = path.getTotalLength();
+    let lo = 0, hi = L; for (let i = 0; i < 30; i++) { const m = (lo + hi) / 2; path.getPointAtLength(m).x < x ? lo = m : hi = m; }
+    const a = path.getPointAtLength(lo), b = path.getPointAtLength(lo + 4);
+    return { x: a.x, y: a.y, rot: Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI };
+  }
+  function hillBoard(label, vb, k, pipX, pipExpr, starExpr, extra = '', overlay = '', after) {
+    const f = board(label, vb, uniq(A.setHill(), k) + `<g id="${k}cast"></g>` + extra, overlay);
+    if (pipX != null) {
+      const c = onCrest(f, k, pipX);
+      document.getElementById(k + 'cast').innerHTML = place(r1(c.x), r1(c.y), 0.6, A.pip(k + 'p'), r1(c.rot * 0.8));
+      pose(f, 'pip', k + 'p', pipExpr);
+      if (starExpr) { document.getElementById(k + 'p-rider').innerHTML = `<g transform="translate(0,-52) scale(.75)">${A.star(k + 'ls')}</g>`; pose(f, 'star', k + 'ls', starExpr); }
+    }
+    famPoseH(f, k, 'happy'); if (after) after(f); return f;
+  }
+  hillBoard('S4 · ~31 s the long climb (parallax)', A.CAMERA.S4_climbA, 'b6', 420, 'normal', 'happy', '', cap('Up the tallest hill they went, one tiny step at a time.'));
+  hillBoard('S4 · ~37 s summit, still so far', A.CAMERA.S4_summit, 'b7', 1250, 'droopy', 'sad', '', cap('But at the very top, the sky was still so far away.'),
+    (f) => { f.querySelector('[id="b7h-deep"]').setAttribute('opacity', .25); });
+  hillBoard('S4 · ~37.5 s look up: the gap is so far (same frame as the S6 payoff)', A.CAMERA.S4_far, 'b7b', 1250, 'lookUp', 'sad', '', cap('But at the very top, the sky was still so far away.'),
+    (f) => { f.querySelector('[id="b7bh-deep"]').setAttribute('opacity', .25); });
+  hillBoard('S5 · ~46 s fireflies lift her', A.CAMERA.S5_tilt, 'b8', null, null, null,
+    `<g transform="translate(1250,640)"><circle r="260" fill="url(#g-bloom)" opacity=".35"/></g>` + place(1250, 640, 0.42, A.star('b8ls')) + ringFF(1250, 660, 130, 10) + ringFF(1250, 800, 230, 5), cap('Glow by glow, they gathered round and lifted the little star higher… and higher…'),
+    (f) => { pose(f, 'star', 'b8ls', 'happy'); });
+  hillBoard('S6 · ~50.5 s home: bloom', A.CAMERA.S6_home, 'b9', null, null, null,
+    place(A.HILL.home[0], A.HILL.home[1], 0.4, `<circle r="420" fill="url(#g-bloom)" opacity=".7"/>` + A.star('b9ls')), cap('…all the way home. That night she shone brighter than ever,'),
+    (f) => { pose(f, 'star', 'b9ls', 'joy'); f.querySelector('[id="b9h-warm"]').setAttribute('opacity', .6); });
+  const end = hillBoard('S6 · ~59 s wide payoff + The End', A.CAMERA.S6_wide, 'b10', 1250, 'asleep', null,
+    place(A.HILL.home[0], A.HILL.home[1], 0.4, A.star('b10ls')) + place(A.HILL.home[0] + 70, A.HILL.home[1] + 60, 1.6, '<use href="#sym-heart"/>'), `<p class="end-card">The End</p>`,
+    (f) => { pose(f, 'star', 'b10ls', 'happy'); f.querySelector('[id="b10h-warm"]').setAttribute('opacity', 1); tf('b10p-body', 'scale(.12)'); tf('b10p-shell', 'translate(0,30)'); });
+  // control bar look
+  const bar = document.createElement('div'); bar.className = 'controls'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Playback');
+  bar.innerHTML = `<button class="ctl-btn ctl-btn--primary" aria-label="Pause">${A.ICONS.pause}</button><button class="ctl-btn" aria-label="Restart">${A.ICONS.restart}</button><div class="ctl-progress" style="--p:98%"><span></span></div><span class="ctl-time">0:59 / 1:00</span><button class="ctl-btn ctl-sound" aria-pressed="false" aria-label="Sound off">${A.ICONS.soundOff}</button>`;
+  end.insertBefore(bar, end.querySelector('figcaption'));
+})();
+</script>
+</body>
+</html>

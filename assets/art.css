@@ -1,0 +1,69 @@
+/* Pip and the Little Star — visual tokens + UI look (studio-art). Link from index.html:
+   <link rel="stylesheet" href="assets/art.css">   Fonts are vendored (OFL), no network. */
+
+@font-face { font-family: 'Sniglet'; font-weight: 800; font-display: block;
+  src: url('fonts/sniglet-latin-800-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-weight: 700; font-display: block;
+  src: url('fonts/nunito-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-weight: 800; font-display: block;
+  src: url('fonts/nunito-latin-800-normal.woff2') format('woff2'); }
+
+:root {
+  --ink: #2B2346; --cream: #FFF6E3; --star: #FFD45C; --star-dk: #EFA43A; --blush: #FF8FA8;
+  --backdrop: #0E1036; --caption-bg: rgba(20, 18, 52, .62);
+  --font-display: 'Sniglet', 'Nunito', ui-rounded, 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --font-ui: 'Nunito', ui-rounded, 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --ease-pop: cubic-bezier(.34, 1.56, .64, 1);
+}
+
+html, body { margin: 0; height: 100%; background: var(--backdrop); color: var(--cream); font-family: var(--font-ui); }
+body { display: grid; place-content: center; gap: 14px; padding: 16px; box-sizing: border-box;
+  background: radial-gradient(120% 80% at 50% 0%, #1B1F5A 0%, var(--backdrop) 60%); }
+
+/* 16:9 stage that always leaves room for the control bar underneath. All type inside scales with cq units. */
+.stage { position: relative; aspect-ratio: 16 / 9; container-type: size; overflow: hidden;
+  width: min(calc(100vw - 32px), calc((100vh - 104px) * 16 / 9));
+  border-radius: clamp(10px, 1.6vw, 22px); background: #141A47;
+  box-shadow: 0 2px 0 rgba(255, 246, 227, .06) inset, 0 24px 60px -20px rgba(0, 0, 0, .6); }
+.stage > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.stage > svg.defs { width: 0; height: 0; } /* holds ART.defs(); never display:none (breaks url(#…) refs) */
+
+/* Captions: lower-centre, max 2 lines, fade+rise in. Never animate per word. */
+.caption { position: absolute; left: 50%; bottom: 5.5cqh; transform: translateX(-50%);
+  max-width: 74cqw; width: max-content; box-sizing: border-box; margin: 0;
+  padding: 1.1cqh 2.8cqh 1.35cqh; border-radius: 2.4cqh; background: var(--caption-bg);
+  font: 700 4.3cqh/1.32 var(--font-ui); letter-spacing: .005em; text-align: center; text-wrap: balance;
+  color: var(--cream); text-shadow: 0 .25cqh 0 rgba(20, 18, 52, .4); }
+.caption em { font: 800 1.08em/1 var(--font-display); font-style: normal; color: var(--star); } /* "plink!" */
+
+/* Title card (0–3 s) and The End (58–60 s): text sits on the sky, no box. */
+.title-card, .end-card { position: absolute; left: 0; right: 0; text-align: center; margin: 0; pointer-events: none;
+  font-family: var(--font-display); font-weight: 800; color: var(--cream);
+  text-shadow: 0 0 3cqh rgba(255, 212, 92, .45), 0 .6cqh 0 rgba(20, 18, 52, .35); }
+.title-card { top: 31cqh; line-height: .95; }
+.title-card .t-small { display: block; font-size: 5.4cqh; letter-spacing: .02em; opacity: .92; }
+.title-card .t-big { display: block; font-size: 11cqh; color: var(--star); }
+.end-card { top: 24cqh; font-size: 9cqh; }
+
+/* Control bar: under the stage, same width. 44px+ touch targets, visible focus. */
+.controls { display: flex; align-items: center; gap: 12px; box-sizing: border-box;
+  width: min(calc(100vw - 32px), calc((100vh - 104px) * 16 / 9));
+  padding: 6px 10px; border-radius: 999px; background: rgba(255, 246, 227, .06);
+  font: 800 15px/1 var(--font-ui); color: var(--cream); }
+.ctl-btn { flex: none; width: 44px; height: 44px; border: 0; border-radius: 50%; padding: 0; cursor: pointer;
+  display: grid; place-items: center; color: var(--cream); background: rgba(255, 246, 227, .10);
+  transition: background .2s, color .2s, transform .25s var(--ease-pop); }
+.ctl-btn:hover { background: rgba(255, 212, 92, .22); color: var(--star); transform: scale(1.06); }
+.ctl-btn:active { transform: scale(.94); }
+.ctl-btn:focus-visible { outline: 3px solid var(--star); outline-offset: 3px; }
+.ctl-btn--primary { width: 52px; height: 52px; background: var(--star); color: var(--ink); }
+.ctl-btn--primary:hover { background: #FFE07A; color: var(--ink); }
+.ctl-progress { position: relative; flex: 1; height: 8px; border-radius: 99px; background: rgba(255, 246, 227, .16); }
+.ctl-progress > span { position: absolute; inset: 0 auto 0 0; width: var(--p, 0%); border-radius: inherit;
+  background: linear-gradient(90deg, #FFB86B, var(--star)); }
+.ctl-progress > span::after { content: ''; position: absolute; right: -7px; top: 50%; width: 14px; height: 14px;
+  margin-top: -7px; border-radius: 50%; background: var(--star); box-shadow: 0 0 10px 2px rgba(255, 212, 92, .55); }
+.ctl-time { min-width: 9ch; text-align: right; font-variant-numeric: tabular-nums; opacity: .85; }
+.ctl-sound[aria-pressed='true'] { color: var(--star); }
+
+@media (prefers-reduced-motion: reduce) { .ctl-btn { transition: none; } }

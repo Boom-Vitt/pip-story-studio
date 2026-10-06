@@ -1,0 +1,8 @@
+{
+  "samplesCompared": 2646000,
+  "seconds": 60,
+  "zeroLagCorrelation": 0.9999901300913419,
+  "decodedPeak": 0.21234548091888428,
+  "decodedRms": 0.014174613574317015,
+  "subjectiveListening": "unavailable: this model runtime does not support audio input"
+}

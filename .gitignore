@@ -1,0 +1,5 @@
+node_modules/
+*.rendering.mp4
+*.bak
+.DS_Store
+shots/
