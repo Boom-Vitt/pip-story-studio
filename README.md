@@ -1,3 +1,15 @@
+<!-- BBN:HEADER:START -->
+<div align="center">
+
+<img src=".github/brand/banner.svg" width="100%" alt="Pip Story Studio — 60-second story animation made by a Claude Code + Codex team" />
+
+<a href="https://github.com/Boom-Vitt/pip-story-studio/stargazers"><img src="https://img.shields.io/github/stars/Boom-Vitt/pip-story-studio?style=flat-square&color=14b8a6&labelColor=0b1220" alt="stars" /></a>
+<a href="https://github.com/Boom-Vitt/pip-story-studio/commits/main"><img src="https://img.shields.io/github/last-commit/Boom-Vitt/pip-story-studio?style=flat-square&color=14b8a6&labelColor=0b1220" alt="last commit" /></a>
+<a href="https://github.com/Boom-Vitt"><img src="https://img.shields.io/badge/by-BoomBigNose-14b8a6?style=flat-square&labelColor=0b1220" alt="by BoomBigNose" /></a>
+
+</div>
+<!-- BBN:HEADER:END -->
+
 # Pip and the Little Star: an AI-team-made story animation
 
 A cute, 60-second English bedtime story, built as a single web page (hand-drawn SVG + GSAP timeline, no build step, no network) and rendered to MP4. It was made by a four-seat agent team defined in [`rig.yaml`](rig.yaml) and run with [OpenRig](https://github.com/mvschwarz/openrig).
@@ -57,3 +69,15 @@ Defaults assume macOS (`/Applications/Google Chrome.app`, `/opt/homebrew/bin/ffm
 ## สรุปภาษาไทย
 
 แอนิเมชันเล่าเรื่องภาษาอังกฤษความยาว 60 วินาที ทำโดยทีมเอเจนต์ 4 ที่นั่ง (ผู้กำกับ/อาร์ตใช้ Claude, วิศวกร/รีวิวเวอร์ใช้ Codex) ผ่าน OpenRig เปิดดูได้ที่ `index.html` หรือไฟล์ `story-animation.mp4` ยังไม่ได้ฟังเสียงจริง วัดได้เฉพาะระดับความดัง
+
+<!-- BBN:FOOTER:START -->
+---
+
+<div align="center">
+
+**สร้างโดย [BoomBigNose](https://github.com/Boom-Vitt)** · [Kruoop.com](https://kruoop.com) แหล่งเรียน AI + คอมมูนิตี้ · [Seeneo.ai](https://seeneo.ai) · [YouTube 220K](https://www.youtube.com/@BoomBigNose)
+
+<sub>ถ้าโปรเจกต์นี้มีประโยชน์ กด ⭐ ให้กำลังใจกันได้เลย</sub>
+
+</div>
+<!-- BBN:FOOTER:END -->
